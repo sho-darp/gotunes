@@ -204,3 +204,94 @@ func VisualSize() string {
 	res, _ := scriptExec("visualSize")
 	return trim(res)
 }
+
+// AirplayDevices AirPlay devices
+func AirplayDevices() ([]AirPlayDevice, error) {
+	airPlayDevices := []AirPlayDevice{}
+	err := unmarshal("airplayDevices", &airPlayDevices)
+	return airPlayDevices, err
+}
+
+// BrowserWindows main iTunes windows
+func BrowserWindows() ([]BrowserWindow, error) {
+	browserWindows := []BrowserWindow{}
+	err := unmarshal("browserWindows", &browserWindows)
+	return browserWindows, err
+}
+
+// Encoders converts a track to a specific file formats
+func Encoders() ([]Encoder, error) {
+	encoders := []Encoder{}
+	err := unmarshal("encoders", &encoders)
+	return encoders, err
+}
+
+// EqPresets equalizer preset configurations
+func EqPresets() ([]EQPreset, error) {
+	eqPresets := []EQPreset{}
+	err := unmarshal("eqPresets", &eqPresets)
+	return eqPresets, err
+}
+
+// EqWindows iTunes equalizer windows
+func EqWindows() ([]EQWindow, error) {
+	eqWindows := []EQWindow{}
+	err := unmarshal("eqPresets", &eqWindows)
+	return eqWindows, err
+}
+
+// MiniplayerWindows miniplayer windows
+func MiniplayerWindows() ([]MiniplayerWindow, error) {
+	miniplayerWindows := []MiniplayerWindow{}
+	err := unmarshal("miniplayerWindows", &miniplayerWindows)
+	return miniplayerWindows, err
+}
+
+// Playlists list of songs/streams
+func Playlists() ([]Playlist, error) {
+	playlists := []Playlist{}
+	err := unmarshal("playlists", &playlists)
+	return playlists, err
+}
+
+// PlaylistWindows sub-window showing a single playlist windows
+func PlaylistWindows() ([]PlaylistWindow, error) {
+	playlistWindows := []PlaylistWindow{}
+	err := unmarshal("playlistWindows", &playlistWindows)
+	return playlistWindows, err
+}
+
+// Sources music sources (music library, CD, device, etc.)
+func Sources() ([]Source, error) {
+	sources := []Source{}
+	err := unmarshal("sources", &sources)
+	return sources, err
+}
+
+// Tracks playable audio sources
+func Tracks() ([]Track, error) {
+	tracks := []Track{}
+	err := unmarshal("tracks", &tracks)
+	return tracks, err
+}
+
+// VideoWindows VideoWindows
+func VideoWindows() ([]VideoWindow, error) {
+	videoWindows := []VideoWindow{}
+	err := unmarshal("videoWindows", &videoWindows)
+	return videoWindows, err
+}
+
+// Visuals visual plug-in list
+func Visuals() ([]Visual, error) {
+	visuals := []Visual{}
+	err := unmarshal("visuals", &visuals)
+	return visuals, err
+}
+
+// Windows the currently windows
+func Windows() ([]Window, error) {
+	windows := []Window{}
+	err := unmarshal("windows", &windows)
+	return windows, err
+}

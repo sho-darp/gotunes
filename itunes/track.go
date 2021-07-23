@@ -6,6 +6,7 @@ import (
 
 type Track struct {
 	Item
+	ArtWorks          []Artwork // a piece of art within a track or playlist
 	Album             string    // the album name of the track
 	AlbumArtist       string    // the album artist of the track
 	AlbumDisliked     bool      // is the album for this track disliked?

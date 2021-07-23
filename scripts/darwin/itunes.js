@@ -1,5 +1,183 @@
 const itunes = Application("iTunes");
 
+const toArray = (objects) => {
+  const objArray = [];
+  for (let i = 0; i < objects.length; i++) {
+    objArray.push(objects[i]);
+  }
+  return objArray;
+};
+
+const getValue = (value) => {
+  return (property) => {
+    try {
+      return value[property]();
+    } catch (e) {
+      return null;
+    }
+  };
+};
+
+/**
+ * get Item properties
+ * @param {*} item
+ * @returns
+ */
+const getItem = (item) => {
+  const getItemValue = getValue(item);
+  return {
+    class: getItemValue("class"),
+    container: getItemValue("container"),
+    id: getItemValue("id"),
+    index: getItemValue("index"),
+    name: getItemValue("name"),
+    persistentId: getItemValue("persistentID"),
+    properties: getItemValue("properties"),
+  };
+};
+
+const getAirPlayDevices = (device) => {
+  const getDeviceValue = getValue(device);
+  return Object.assign(getItem(device), {
+    active: getDeviceValue("active"),
+    available: getDeviceValue("available"),
+    kind: getDeviceValue("kind"),
+    networkAddress: getDeviceValue("networkAddress"),
+    protected: getDeviceValue("protected"),
+    selected: getDeviceValue("selected"),
+    supportsAudio: getDeviceValue("supportsAudio"),
+    supportsVideo: getDeviceValue("supportsVideo"),
+    soundVolume: getDeviceValue("soundVolume"),
+  });
+};
+
+const getEncoder = (encoder) => {
+  const getEncoderValue = getValue(encoder);
+  return Object.assign(getItem(encoder), {
+    format: getEncoderValue("format"),
+  });
+};
+
+const getEQPreset = (eqPreset) => {
+  const getEQPresetValue = getValue(eqPreset);
+  return Object.assign(getItem(eqPreset), {
+    band1: getEQPresetValue("band1"),
+    band2: getEQPresetValue("band2()"),
+    band3: getEQPresetValue("band3"),
+    band4: getEQPresetValue("band4"),
+    band5: getEQPresetValue("band5"),
+    band6: getEQPresetValue("band6"),
+    band7: getEQPresetValue("band7"),
+    band8: getEQPresetValue("band8"),
+    band9: getEQPresetValue("band9"),
+    band10: getEQPresetValue("band10"),
+    modifiable: getEQPresetValue("modifiable"),
+    preamp: getEQPresetValue("preamp"),
+    updateTracks: getEQPresetValue("updateTracks"),
+  });
+};
+
+const getPlaylist = (playlist) => {
+  const getPlaylistValue = getValue(playlist);
+  return Object.assign(getItem(playlist), {
+    description: getPlaylistValue("description"),
+    disliked: getPlaylistValue("disliked"),
+    duration: getPlaylistValue("duration"),
+    name: getPlaylistValue("name"),
+    loved: getPlaylistValue("loved"),
+    parent: getPlaylistValue("parent"),
+    shuffle: getPlaylistValue("shuffle"),
+    size: getPlaylistValue("size"),
+    songRepeat: getPlaylistValue("songRepeat"),
+    specialKind: getPlaylistValue("specialKind"),
+    time: getPlaylistValue("time"),
+    visible: getPlaylistValue("visible"),
+  });
+};
+
+const getArtwork = (artwork) => {
+  const getArtworkValue = getValue(artwork);
+  return Object.assign(getItem(artwork), {
+    data: getArtworkValue("data"),
+    description: getArtworkValue("description"),
+    downloaded: getArtworkValue("downloaded"),
+    format: getArtworkValue("format"),
+    kind: getArtworkValue("kind"),
+    rawData: getArtworkValue("rawData"),
+  });
+};
+
+const getTrack = (track) => {
+  const getTrackValue = getValue(track);
+  const artworks =
+    getTrackValue("artworks") == null
+      ? []
+      : toArray(track.artworks).map((artwork) => {
+          return getArtwork(artwork);
+        });
+
+  return Object.assign(getItem(track), getTrackValue("properties"), {
+    artworks: artworks,
+  });
+};
+
+const getVisual = (visual) => {
+  return getItem(visual);
+};
+
+const getBrowserWindow = (browserWindow) => {
+  const getBrowserWindowValue = getValue(browserWindow);
+  return Object.assign(getItem(browserWindow), {
+    selection: getBrowserWindowValue("selection"),
+    view: getPlaylist(browserWindow),
+  });
+};
+
+const getWindow = (window) => {
+  const getWindowValue = getValue(window);
+  return Object.assign(getItem(window), {
+    bounds: getWindowValue("bounds"),
+    closeable: getWindowValue("closeable"),
+    collapseable: getWindowValue("collapseable"),
+    collapseable: getWindowValue("collapseable"),
+    fullScreen: getWindowValue("fullScreen"),
+    position: getWindowValue("position"),
+    resizable: getWindowValue("resizable"),
+    visible: getWindowValue("visible"),
+    zoomable: getWindowValue("zoomable"),
+    zoomed: getWindowValue("zoomed"),
+  });
+};
+
+const getEQWindow = (eqWindow) => {
+  return getWindow(eqWindow);
+};
+
+const getMiniplayerWindow = (miniplayerWindow) => {
+  return getWindow(miniplayerWindow);
+};
+
+const getPlaylistWindow = (playlistWindow) => {
+  // TODO: selectionの配列を変換する
+  return Object.assign(getWindow(playlistWindow), {
+    selection: getTrack(playlistWindow.selection)["0"],
+    view: getPlaylist(playlistWindow),
+  });
+};
+
+const getSources = (source) => {
+  const getSourceValue = getValue(source);
+  return Object.assign(getItem(source), {
+    capacity: getSourceValue("capacity"),
+    freeSpace: getSourceValue("freeSpace"),
+    kind: getSourceValue("kind"),
+  });
+};
+
+const getVideoWindow = (videoWindow) => {
+  return getWindow(videoWindow);
+};
+
 /**
  * the currently selected AirPlay device(s)
  * @returns []airplayDevice
@@ -7,17 +185,7 @@ const itunes = Application("iTunes");
 const currentAirPlayDevices = () => {
   const devices = itunes.currentAirPlayDevices();
   return devices.map((device) => {
-    return {
-      active: device.active(),
-      available: device.available(),
-      kind: device.kind(),
-      networkAddress: device.networkAddress(),
-      protected: device.protected(),
-      selected: device.selected(),
-      supportsAudio: device.supportsAudio(),
-      supportsVideo: device.supportsVideo(),
-      soundVolume: device.soundVolume(),
-    };
+    return getAirPlayDevices(device);
   });
 };
 
@@ -27,9 +195,7 @@ const currentAirPlayDevices = () => {
  */
 const currentEncoder = () => {
   const encoder = itunes.currentEncoder();
-  return {
-    format: encoder.format(),
-  };
+  return getEncoder(encoder);
 };
 
 /**
@@ -38,21 +204,7 @@ const currentEncoder = () => {
  */
 const currentEQPreset = () => {
   const eqPreset = itunes.currentEQPreset();
-  return {
-    band1: eqPreset.band1(),
-    band2: eqPreset.band2(),
-    band3: eqPreset.band3(),
-    band4: eqPreset.band4(),
-    band5: eqPreset.band5(),
-    band6: eqPreset.band6(),
-    band7: eqPreset.band7(),
-    band8: eqPreset.band8(),
-    band9: eqPreset.band9(),
-    band10: eqPreset.band10(),
-    modifiable: eqPreset.modifiable(),
-    preamp: eqPreset.preamp(),
-    updateTracks: eqPreset.updateTracks(),
-  };
+  return getEQPreset(eqPreset);
 };
 
 /**
@@ -61,20 +213,7 @@ const currentEQPreset = () => {
  */
 const currentPlaylist = () => {
   const playlist = itunes.currentPlaylist();
-  return {
-    description: playlist.description(),
-    disliked: playlist.disliked(),
-    duration: playlist.duration(),
-    name: playlist.name(),
-    loved: playlist.loved(),
-    parent: playlist.parent(),
-    shuffle: playlist.shuffle(),
-    size: playlist.size(),
-    songRepeat: playlist.songRepeat(),
-    specialKind: playlist.specialKind(),
-    time: playlist.time(),
-    visible: playlist.visible(),
-  };
+  return getPlaylist(playlist);
 };
 
 /**
@@ -83,15 +222,7 @@ const currentPlaylist = () => {
  */
 const currentTrack = () => {
   const track = itunes.currentTrack;
-  return Object.assign(track.properties(), {
-    class: track.class(),
-    container: track.container(),
-    id: track.id(),
-    index: track.index(),
-    name: track.name(),
-    persistentId: track.persistentID(),
-    properties: track.properties(),
-  });
+  return getTrack(track);
 };
 
 /**
@@ -100,15 +231,77 @@ const currentTrack = () => {
  */
 const currentVisual = () => {
   const visual = itunes.currentVisual();
-  return {
-    class: visual.class(),
-    container: visual.container(),
-    id: visual.id(),
-    index: visual.index(),
-    name: visual.name(),
-    // persistentId: visual.persistentID(),
-    properties: visual.properties(),
-  };
+  return getVisual(visual);
+};
+
+/**
+ * main iTunes windows
+ * @returns
+ */
+const browserWindow = () => {
+  const browserWindows = toArray(itunes.browserWindows);
+  return browserWindows.map((browserWindow) => getBrowserWindow(browserWindow));
+};
+
+const windows = () => {
+  const windows = toArray(itunes.windows);
+  return windows.map((window) => getWindow(window));
+};
+
+const encoders = () => {
+  const encoders = toArray(itunes.encoders);
+  return encoders.map((encoder) => getEncoder(encoder));
+};
+
+const eqPresets = () => {
+  const eqPresets = toArray(itunes.eqPresets);
+  return eqPresets.map((eqPreset) => getEQPreset(eqPreset));
+};
+
+const eqWindows = () => {
+  const eqWindows = toArray(itunes.eqWindows);
+  return eqWindows.map((eqWindow) => getEQWindow(eqWindow));
+};
+
+const miniplayerWindows = () => {
+  const miniplayerWindows = toArray(itunes.miniplayerWindows);
+  return miniplayerWindows.map((miniplayerWindow) =>
+    getMiniplayerWindow(miniplayerWindow)
+  );
+};
+
+const playlists = () => {
+  const playlists = toArray(itunes.playlists);
+  return playlists.map((playlist) => getPlaylist(playlist));
+};
+
+const playlistWindows = () => {
+  const playlistWindows = toArray(itunes.playlistWindows);
+  return playlistWindows.map((playlistWidow) =>
+    getPlaylistWindow(playlistWidow)
+  );
+};
+
+const sources = () => {
+  const sources = toArray(itunes.sources);
+  return sources.map((source) => getSources(source));
+};
+
+const tracks = () => {
+  // TODO: 処理速度が遅い
+  return [];
+  // const tracks = toArray(itunes.tracks);
+  // return tracks.map((track) => getTrack(track));
+};
+
+const videoWindows = () => {
+  const videoWindows = toArray(itunes.videoWindows);
+  return videoWindows.map((videoWindow) => getVideoWindow(videoWindow));
+};
+
+const visuals = () => {
+  const visuals = toArray(itunes.visuals);
+  return visuals.map((visual) => getVisual(visual));
 };
 
 /**
@@ -174,6 +367,32 @@ function run(args) {
       return itunes.visualsEnabled();
     case "visualSize":
       return itunes.visualSize();
+    //
+    case "browserWindows":
+      return JSON.stringify(browserWindow());
+    case "encoders":
+      return JSON.stringify(encoders());
+    case "eqPresets":
+      return JSON.stringify(eqPresets());
+    case "eqWindows":
+      return JSON.stringify(eqWindows());
+    case "miniplayerWindows":
+      return JSON.stringify(miniplayerWindows());
+    case "playlists":
+      return JSON.stringify(playlists());
+    case "playlistWindows":
+      return JSON.stringify(playlistWindows());
+    case "sources":
+      return JSON.stringify(sources());
+    case "tracks":
+      return JSON.stringify(tracks());
+    case "videoWindows":
+      return JSON.stringify(videoWindows());
+    case "visuals":
+      return JSON.stringify(visuals());
+    case "windows":
+      return JSON.stringify(windows());
+
     default:
       console.log("Unknown Arguments.");
       returnError();

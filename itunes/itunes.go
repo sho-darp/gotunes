@@ -295,3 +295,45 @@ func Windows() ([]Window, error) {
 	err := unmarshal("windows", &windows)
 	return windows, err
 }
+
+// // UserPlaylists custom playlists created by the user
+// func UserPlaylists() ([]UserPlaylist, error) {
+// 	userPlaylists := []UserPlaylist{}
+// 	err := unmarshal("userPlaylists", &userPlaylists)
+// 	return userPlaylists, err
+// }
+
+// // SubscriptionPlaylist subscription playlists from Apple Music
+// func SubscriptionPlaylists() ([]SubscriptionPlaylist, error) {
+// 	subscriptionPlaylists := []SubscriptionPlaylist{}
+// 	err := unmarshal("subscriptionPlaylists", &subscriptionPlaylists)
+// 	return subscriptionPlaylists, err
+// }
+
+// // LibraryPlaylists the master music library playlists
+// func LibraryPlaylists() ([]LibraryPlaylist, error) {
+// 	libraryPlaylists := []LibraryPlaylist{}
+// 	err := unmarshal("libraryPlaylists", &libraryPlaylists)
+// 	return libraryPlaylists, err
+// }
+
+// // FolderPlaylists folder that contains other playlists
+// func FolderPlaylists() ([]FolderPlaylist, error) {
+// 	folderPlaylist := []FolderPlaylist{}
+// 	err := unmarshal("folderPlaylists", &folderPlaylist)
+// 	return folderPlaylist, err
+// }
+
+// // AudioCDPlaylists playlist representing an audio CD
+// func AudioCDPlaylists() ([]AudioCDPlaylist, error) {
+// 	audioCDPlaylist := []AudioCDPlaylist{}
+// 	err := unmarshal("audioCDPlaylists", &audioCDPlaylist)
+// 	return audioCDPlaylist, err
+// }
+
+// // RadioTunerPlaylist the radio tuner playlist
+// func RadioTunerPlaylists() ([]RadioTunerPlaylist, error) {
+// 	radioTunerPlaylist := []RadioTunerPlaylist{}
+// 	err := unmarshal("radioTunerPlaylist", &radioTunerPlaylist)
+// 	return radioTunerPlaylist, err
+// }

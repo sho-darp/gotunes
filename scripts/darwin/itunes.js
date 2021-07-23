@@ -79,7 +79,15 @@ const getEQPreset = (eqPreset) => {
 
 const getPlaylist = (playlist) => {
   const getPlaylistValue = getValue(playlist);
+
+  const tracks = toArray(playlist.tracks).map((track) => getTrack(track));
+  const artworks = toArray(playlist.artworks).map((artwork) =>
+    getArtwork(artwork)
+  );
+
   return Object.assign(getItem(playlist), {
+    tracks,
+    artworks,
     description: getPlaylistValue("description"),
     disliked: getPlaylistValue("disliked"),
     duration: getPlaylistValue("duration"),
@@ -165,9 +173,30 @@ const getPlaylistWindow = (playlistWindow) => {
   });
 };
 
-const getSources = (source) => {
+const getSource = (source) => {
   const getSourceValue = getValue(source);
+
+  // TODO: 高速化
+  const audioCDPlaylists = toArray(source.audioCDPlaylists).map(
+    (audioCDPlaylist) => getAudioCDPlaylist(audioCDPlaylist)
+  );
+  // const libraryPlaylists = toArray(source.libraryPlaylists).map(libraryPlaylist => getLibraryPlayList(libraryPlaylist))
+  // const playlists = toArray(source.playlists).map(playlist => getPlaylist(playlist))
+  const subscriptionPlaylists = toArray(source.subscriptionPlaylists).map(
+    (subscriptionPlaylist) => getSubscriptionPlaylist(subscriptionPlaylist)
+  );
+  // const userPlaylists = toArray(source.userPlaylists).map(userPlaylist => getUserPlaylist(userPlaylist))
+  const radioTunerPlaylists = toArray(source.radioTunerPlaylists).map(
+    (radioTunerPlaylist) => getRadioTunerPlaylist(radioTunerPlaylist)
+  );
+
   return Object.assign(getItem(source), {
+    audioCDPlaylists,
+    // libraryPlaylists,
+    // playlists,
+    subscriptionPlaylists,
+    // userPlaylists,
+    radioTunerPlaylists,
     capacity: getSourceValue("capacity"),
     freeSpace: getSourceValue("freeSpace"),
     kind: getSourceValue("kind"),
@@ -176,6 +205,156 @@ const getSources = (source) => {
 
 const getVideoWindow = (videoWindow) => {
   return getWindow(videoWindow);
+};
+
+const getUserPlaylist = (userPlaylist) => {
+  const getUserPlayListValue = getValue(userPlaylist);
+  // // TODO: 高速化
+  // const fileTracks =
+  // getUserPlayListValue("fileTracks") == null
+  //   ? []
+  //   : toArray(userPlaylist.fileTracks).map((fileTrack) => {
+  //       return getFileTrack(fileTrack);
+  //     });
+  const fileTracks = [];
+
+  const urlTracks =
+    getUserPlayListValue("urlTracks") == null
+      ? []
+      : toArray(userPlaylist.urlTracks).map((urlTrack) => {
+          return getUrlTrack(urlTrack);
+        });
+
+  const sharedTracks =
+    getUserPlayListValue("sharedTracks") == null
+      ? []
+      : toArray(userPlaylist.sharedTracks).map((sharedTrack) => {
+          return getSharedTrack(sharedTrack);
+        });
+
+  return Object.assign(getPlaylist(userPlaylist), {
+    fileTracks,
+    urlTracks,
+    sharedTracks,
+    shared: getUserPlayListValue("shared"),
+    smart: getUserPlayListValue("smart"),
+    genius: getUserPlayListValue("genius"),
+  });
+};
+
+const getFileTrack = (fileTrack) => {
+  const getFileTrackValue = getValue(fileTrack);
+  return Object.assign(getTrack(fileTrack), {
+    location: getFileTrackValue("location"),
+  });
+};
+
+const getURLTrack = (urlTrack) => {
+  const getURLTrackValue = getValue(urlTrack);
+  return Object.assign(getTrack(urlTrack), {
+    address: getURLTrackValue("address"),
+  });
+};
+
+const getSharedTrack = (sharedTrack) => {
+  return getTrack(sharedTrack);
+};
+
+const getSubscriptionPlaylist = (subscriptionPlaylist) => {
+  const getSubscriptionPlaylistValue = getValue(subscriptionPlaylist);
+  // 高速化
+  // const fileTracks =
+  // getSubscriptionPlaylistValue("fileTracks") == null
+  //   ? []
+  //   : toArray(subscriptionPlaylist.fileTracks).map((fileTrack) => {
+  //       return getFileTrack(fileTrack);
+  //     });
+  const fileTracks = [];
+
+  const urlTracks =
+    getSubscriptionPlaylistValue("urlTracks") == null
+      ? []
+      : toArray(subscriptionPlaylist.urlTracks).map((urlTrack) => {
+          return getUrlTrack(urlTrack);
+        });
+
+  return {
+    fileTracks,
+    urlTracks,
+  };
+};
+
+const getLibraryPlayList = (libraryPlayList) => {
+  const fileTracks = [];
+  // const fileTracks = toArray(libraryPlayList.fileTracks).map((fileTrack) => getFileTrack(fileTrack));
+  const urlTracks = toArray(libraryPlayList.urlTracks).map((urlTrack) =>
+    getUrlTrack(urlTrack)
+  );
+  const sharedTracks = toArray(libraryPlayList.sharedTracks).map(
+    (sharedTrack) => getSharedTrack(sharedTrack)
+  );
+
+  return Object.assign(getPlaylist(libraryPlayList), {
+    fileTracks,
+    urlTracks,
+    sharedTracks,
+  });
+};
+
+const getFolderPlaylist = (folderPlaylist) => {
+  const getFolderPlaylistValue = getValue(folderPlaylist);
+
+  const fileTracks = [];
+  // const fileTracks = toArray(libraryPlayList.fileTracks).map((fileTrack) => getFileTrack(fileTrack));
+  const urlTracks = toArray(folderPlaylist.urlTracks).map((urlTrack) =>
+    getUrlTrack(urlTrack)
+  );
+  const sharedTracks = toArray(folderPlaylist.sharedTracks).map((sharedTrack) =>
+    getSharedTrack(sharedTrack)
+  );
+
+  return Object.assign(getUserPlaylist(folderPlaylist), {
+    fileTracks,
+    urlTracks,
+    sharedTracks,
+    shared: getFolderPlaylistValue("shared"),
+    smart: getFolderPlaylistValue("smart"),
+    genius: getFolderPlaylistValue("genius"),
+  });
+};
+
+const getAudioCDTrack = (audioCDTrack) => {
+  const getAudioCDTrackValue = getValue(audioCDTrack);
+  return Object.assign(getTrack(audioCDTrack), {
+    location: getAudioCDTrackValue("location"),
+  });
+};
+
+const getAudioCDPlaylist = (audioCDPlaylist) => {
+  const getAudioCDPlaylistValue = getValue(audioCDPlaylist);
+  const audioCDTracks = toArray(audioCDPlaylist.audioCDTracks).map(
+    (audioCDTrack) => getAudioCDTrack(audioCDTrack)
+  );
+
+  return Object.assign(getPlaylist(audioCDPlaylist), {
+    audioCDTracks,
+    artist: getAudioCDPlaylistValue("artist"),
+    compilation: getAudioCDPlaylistValue("compilation"),
+    composer: getAudioCDPlaylistValue("composer"),
+    discCount: getAudioCDPlaylistValue("discCount"),
+    discNumber: getAudioCDPlaylistValue("discNumber"),
+    genre: getAudioCDPlaylistValue("genre"),
+    year: getAudioCDPlaylistValue("year"),
+  });
+};
+
+const getRadioTunerPlaylist = (radioTunerPlaylist) => {
+  const urlTracks = toArray(radioTunerPlaylist.urlTracks).map((urlTrack) =>
+    getUrlTrack(urlTrack)
+  );
+  return Object.assign(getPlaylist(radioTunerPlaylist), {
+    urlTracks,
+  });
 };
 
 /**
@@ -284,7 +463,7 @@ const playlistWindows = () => {
 
 const sources = () => {
   const sources = toArray(itunes.sources);
-  return sources.map((source) => getSources(source));
+  return sources.map((source) => getSource(source));
 };
 
 const tracks = () => {
@@ -302,6 +481,46 @@ const videoWindows = () => {
 const visuals = () => {
   const visuals = toArray(itunes.visuals);
   return visuals.map((visual) => getVisual(visual));
+};
+
+const userPlaylists = () => {
+  const userPlaylists = toArray(itunes.userPlaylists);
+  return userPlaylists.map((userPlaylist) => getUserPlaylist(userPlaylist));
+};
+
+const subscriptionPlaylists = () => {
+  const subscriptionPlaylists = toArray(itunes.subscriptionPlaylists);
+  return subscriptionPlaylists.map((subscriptionPlaylist) =>
+    getSubscriptionPlaylist(subscriptionPlaylist)
+  );
+};
+
+const libraryPlaylists = () => {
+  const libraryPlaylists = toArray(itunes.libraryPlaylists);
+  return libraryPlaylists.map((libraryPlaylist) =>
+    getLibraryPlayList(libraryPlaylist)
+  );
+};
+
+const folderPlaylists = () => {
+  const folderPlaylists = toArray(itunes.folderPlaylists);
+  return folderPlaylists.map((folderPlaylist) =>
+    getFolderPlaylists(folderPlaylist)
+  );
+};
+
+const audioCDPlaylists = () => {
+  const audioCDPlaylists = toArray(itunes.audioCDPlaylists);
+  return audioCDPlaylists.map((audioCDPlaylist) =>
+    getAudioCDPlaylist(audioCDPlaylist)
+  );
+};
+
+const radioTunerPlaylists = () => {
+  const radioTunerPlaylists = toArray(itunes.radioTunerPlaylists);
+  return radioTunerPlaylists.map((radioTunerPlaylist) =>
+    getRadioTunerPlaylist(radioTunerPlaylist)
+  );
 };
 
 /**
@@ -392,7 +611,18 @@ function run(args) {
       return JSON.stringify(visuals());
     case "windows":
       return JSON.stringify(windows());
-
+    // case "userPlaylists":
+    //   return JSON.stringify(userPlaylists());
+    // case "subscriptionPlaylists":
+    //   return JSON.stringify(subscriptionPlaylists());
+    // case "libraryPlaylists":
+    //   return JSON.stringify(libraryPlaylists());
+    // case "folderPlaylists":
+    //   return JSON.stringify(folderPlaylists());
+    // case "audioCDPlaylists":
+    //   return JSON.stringify(folderPlaylists());
+    // case "radioTunerPlaylist":
+    //   return JSON.stringify(radioTunerPlaylists());
     default:
       console.log("Unknown Arguments.");
       returnError();

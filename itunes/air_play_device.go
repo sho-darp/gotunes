@@ -1,5 +1,6 @@
 package itunes
 
+// AirPlayDevice an AirPlay device
 type AirPlayDevice struct {
 	Item
 	Active         bool   // is the device currently being played to?

@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Track playable audio source
 type Track struct {
 	Item
 	ArtWorks          []Artwork // a piece of art within a track or playlist

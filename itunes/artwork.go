@@ -1,5 +1,6 @@
 package itunes
 
+// Artwork a piece of art within a track or playlist
 type Artwork struct {
 	Item
 	Data        Picture // data for this artwork, in the form of a picture

@@ -1,7 +1,10 @@
 package itunes
 
+// Playlist a list of songs/streams
 type Playlist struct {
 	Item
+	Tracks      []Track
+	Artworks    []Artwork
 	Description string    // the description of the playlist
 	Disliked    bool      // is this playlist disliked?
 	Duration    int       // the total length of all songs (in seconds)

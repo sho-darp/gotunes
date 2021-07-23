@@ -1,5 +1,6 @@
 package itunes
 
+// Item an item
 type Item struct {
 	Class        string                 // the class of the item
 	ID           int                    // the id of the item

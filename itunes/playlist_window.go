@@ -1,5 +1,6 @@
 package itunes
 
+// PlaylistWindow a sub-window showing a single playlist
 type PlaylistWindow struct {
 	Window
 	Selection []Track  // the selected songs

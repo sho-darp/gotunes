@@ -1,5 +1,6 @@
 package itunes
 
+// Window any window
 type Window struct {
 	Item
 	Bounds       Rectangle // the boundary rectangle for the window

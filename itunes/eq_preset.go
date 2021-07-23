@@ -1,5 +1,6 @@
 package itunes
 
+// EQPreset equalizer preset configuration
 type EQPreset struct {
 	Item
 	Band1        float64 // the equalizer 32 Hz band level (-12.0 dB to +12.0 dB)

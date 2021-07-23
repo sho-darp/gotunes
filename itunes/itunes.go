@@ -8,15 +8,23 @@ import (
 	"strings"
 )
 
-func scriptExec(arg string) ([]byte, error) {
+func switchExec(arg string) *exec.Cmd {
 	cmd := &exec.Cmd{}
-
 	switch runtime.GOOS {
 	case "darwin":
 		cmd = exec.Command("osascript", "-l", "JavaScript", "scripts/darwin/itunes.js", arg)
 	}
+	return cmd
+}
 
+func scriptExec(arg string) ([]byte, error) {
+	cmd := switchExec(arg)
 	return cmd.Output()
+}
+
+func scriptAsyncExec(arg string) error {
+	cmd := switchExec(arg)
+	return cmd.Start()
 }
 
 func scriptExecBool(arg string) (bool, error) {
@@ -337,3 +345,50 @@ func Windows() ([]Window, error) {
 // 	err := unmarshal("radioTunerPlaylist", &radioTunerPlaylist)
 // 	return radioTunerPlaylist, err
 // }
+
+// Controll
+
+// BackTrack reposition to beginning of current track or go to previous track if already at start of current track
+func BackTrack() {
+	scriptAsyncExec("backTrack")
+}
+
+// FastForward skip forward in a playing track
+func FastForward() {
+	scriptAsyncExec("fastForward")
+}
+
+// NextTrack advance to the next track in the current playlist
+func NextTrack() {
+	scriptAsyncExec("nextTrack")
+}
+
+// Pause pause playback
+func Pause() {
+	scriptAsyncExec("pause")
+}
+
+// Playpause toggle the playing/paused state of the current track
+func Playpause() {
+	scriptAsyncExec("playpause")
+}
+
+// PreviousTrack return to the previous track in the current playlist
+func PreviousTrack() {
+	scriptAsyncExec("previousTrack")
+}
+
+// Resume disable fast forward/rewind and resume playback, if playing.
+func Resume() {
+	scriptAsyncExec("resume")
+}
+
+// Rewind skip backwards in a playing track
+func Rewind() {
+	scriptAsyncExec("rewind")
+}
+
+// Stop stop playback
+func Stop() {
+	scriptAsyncExec("stop")
+}

@@ -623,8 +623,28 @@ function run(args) {
     //   return JSON.stringify(folderPlaylists());
     // case "radioTunerPlaylist":
     //   return JSON.stringify(radioTunerPlaylists());
+    case "backTrack":
+      return itunes.backTrack();
+    case "fastForward":
+      return itunes.fastForward();
+    case "nextTrack":
+      return itunes.nextTrack();
+    case "pause":
+      return itunes.pause();
+    case "playpause":
+      return itunes.playpause();
+    case "previousTrack":
+      return itunes.previousTrack();
+    case "resume":
+      return itunes.resume();
+    case "rewind":
+      return itunes.rewind();
+    case "stop":
+      return itunes.stop();
     default:
       console.log("Unknown Arguments.");
       returnError();
   }
 }
+
+itunes.backTrack();

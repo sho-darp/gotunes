@@ -129,6 +129,7 @@ const getTrack = (track) => {
 
   return Object.assign(getItem(track), getTrackValue("properties"), {
     artworks: artworks,
+    lyrics: JSON.stringify(getTrackValue("lyrics"))
   });
 };
 

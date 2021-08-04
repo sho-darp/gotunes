@@ -1,4 +1,7 @@
-const itunes = Application("iTunes");
+const app = Application.currentApplication();
+app.includeStandardAdditions = true;
+const version = Number(app.doShellScript("sw_vers -productVersion| cut -d '.' -f 1-2"));
+const itunes = version < 10.15 ? Application("iTunes") : Application("Music");
 
 const toArray = (objects) => {
   const objArray = [];

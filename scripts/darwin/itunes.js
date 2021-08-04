@@ -649,5 +649,3 @@ function run(args) {
       returnError();
   }
 }
-
-itunes.backTrack();

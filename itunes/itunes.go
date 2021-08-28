@@ -2,20 +2,9 @@ package itunes
 
 import (
 	"encoding/json"
-	"os/exec"
-	"runtime"
 	"strconv"
 	"strings"
 )
-
-func switchExec(arg string) *exec.Cmd {
-	cmd := &exec.Cmd{}
-	switch runtime.GOOS {
-	case "darwin":
-		cmd = exec.Command("osascript", "-l", "JavaScript", "scripts/darwin/itunes.js", arg)
-	}
-	return cmd
-}
 
 func scriptExec(arg string) ([]byte, error) {
 	cmd := switchExec(arg)

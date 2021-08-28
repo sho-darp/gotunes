@@ -615,18 +615,18 @@ function run(args) {
       return JSON.stringify(visuals());
     case "windows":
       return JSON.stringify(windows());
-    // case "userPlaylists":
-    //   return JSON.stringify(userPlaylists());
-    // case "subscriptionPlaylists":
-    //   return JSON.stringify(subscriptionPlaylists());
-    // case "libraryPlaylists":
-    //   return JSON.stringify(libraryPlaylists());
-    // case "folderPlaylists":
-    //   return JSON.stringify(folderPlaylists());
-    // case "audioCDPlaylists":
-    //   return JSON.stringify(folderPlaylists());
-    // case "radioTunerPlaylist":
-    //   return JSON.stringify(radioTunerPlaylists());
+    case "userPlaylists":
+      return JSON.stringify(userPlaylists());
+    case "subscriptionPlaylists":
+      return JSON.stringify(subscriptionPlaylists());
+    case "libraryPlaylists":
+      return JSON.stringify(libraryPlaylists());
+    case "folderPlaylists":
+      return JSON.stringify(folderPlaylists());
+    case "audioCDPlaylists":
+      return JSON.stringify(folderPlaylists());
+    case "radioTunerPlaylist":
+      return JSON.stringify(radioTunerPlaylists());
     case "backTrack":
       return itunes.backTrack();
     case "fastForward":

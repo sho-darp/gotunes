@@ -1,7 +1,12 @@
 package itunes
 
-import "os/exec"
+import (
+	"os/exec"
+
+	"github.com/sho-darp/gotunes/scripts/darwin"
+)
 
 func switchExec(arg string) *exec.Cmd {
-	return exec.Command("osascript", "-l", "JavaScript", "scripts/darwin/itunes.js", arg)
+	script := darwin.GetScript()
+	return exec.Command("osascript", "-l", "JavaScript", "-e", string(script), arg)
 }

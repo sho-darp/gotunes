@@ -3,10 +3,10 @@ app.includeStandardAdditions = true;
 const version = Number(app.doShellScript("sw_vers -productVersion| cut -d '.' -f 1-2"));
 const itunes = version < 10.15 ? Application("iTunes") : Application("Music");
 
-const toArray = (objects) => {
+const map = (array, callback) => {
   const objArray = [];
-  for (let i = 0; i < objects.length; i++) {
-    objArray.push(objects[i]);
+  for (let i = 0; i < array.length; i++) {
+    objArray.push(callback(array[i], i));
   }
   return objArray;
 };
@@ -180,26 +180,28 @@ const getPlaylistWindow = (playlistWindow) => {
 const getSource = (source) => {
   const getSourceValue = getValue(source);
 
-  // TODO: 高速化
-  const audioCDPlaylists = toArray(source.audioCDPlaylists).map(
-    (audioCDPlaylist) => getAudioCDPlaylist(audioCDPlaylist)
+  // FIXME: 高速化
+  const audioCDPlaylists = map(source.audioCDPlaylists, (audioCDPlaylist) =>
+    getAudioCDPlaylist(audioCDPlaylist)
   );
-  // const libraryPlaylists = toArray(source.libraryPlaylists).map(libraryPlaylist => getLibraryPlayList(libraryPlaylist))
-  // const playlists = toArray(source.playlists).map(playlist => getPlaylist(playlist))
-  const subscriptionPlaylists = toArray(source.subscriptionPlaylists).map(
+  const libraryPlaylists = map(source.libraryPlaylists, libraryPlaylist => getLibraryPlayList(libraryPlaylist))
+  const playlists = map(source.playlists, playlist => getPlaylist(playlist))
+  const subscriptionPlaylists = map(
+    source.subscriptionPlaylists,
     (subscriptionPlaylist) => getSubscriptionPlaylist(subscriptionPlaylist)
   );
-  // const userPlaylists = toArray(source.userPlaylists).map(userPlaylist => getUserPlaylist(userPlaylist))
-  const radioTunerPlaylists = toArray(source.radioTunerPlaylists).map(
+  const userPlaylists = map(source.userPlaylists, userPlaylist => getUserPlaylist(userPlaylist))
+  const radioTunerPlaylists = map(
+    source.radioTunerPlaylists,
     (radioTunerPlaylist) => getRadioTunerPlaylist(radioTunerPlaylist)
   );
 
   return Object.assign(getItem(source), {
     audioCDPlaylists,
-    // libraryPlaylists,
-    // playlists,
+    libraryPlaylists,
+    playlists,
     subscriptionPlaylists,
-    // userPlaylists,
+    userPlaylists,
     radioTunerPlaylists,
     capacity: getSourceValue("capacity"),
     freeSpace: getSourceValue("freeSpace"),
@@ -213,26 +215,25 @@ const getVideoWindow = (videoWindow) => {
 
 const getUserPlaylist = (userPlaylist) => {
   const getUserPlayListValue = getValue(userPlaylist);
-  // // TODO: 高速化
-  // const fileTracks =
-  // getUserPlayListValue("fileTracks") == null
-  //   ? []
-  //   : toArray(userPlaylist.fileTracks).map((fileTrack) => {
-  //       return getFileTrack(fileTrack);
-  //     });
-  const fileTracks = [];
+  // FIXME: 高速化
+  const fileTracks =
+  getUserPlayListValue("fileTracks") == null
+    ? []
+    : map(userPlaylist.fileTracks, (fileTrack) => {
+        return getFileTrack(fileTrack);
+      });
 
   const urlTracks =
     getUserPlayListValue("urlTracks") == null
       ? []
-      : toArray(userPlaylist.urlTracks).map((urlTrack) => {
+      : map(userPlaylist.urlTracks, (urlTrack) => {
           return getUrlTrack(urlTrack);
         });
 
   const sharedTracks =
     getUserPlayListValue("sharedTracks") == null
       ? []
-      : toArray(userPlaylist.sharedTracks).map((sharedTrack) => {
+      : map(userPlaylist.sharedTracks, (sharedTrack) => {
           return getSharedTrack(sharedTrack);
         });
 
@@ -266,19 +267,18 @@ const getSharedTrack = (sharedTrack) => {
 
 const getSubscriptionPlaylist = (subscriptionPlaylist) => {
   const getSubscriptionPlaylistValue = getValue(subscriptionPlaylist);
-  // 高速化
-  // const fileTracks =
-  // getSubscriptionPlaylistValue("fileTracks") == null
-  //   ? []
-  //   : toArray(subscriptionPlaylist.fileTracks).map((fileTrack) => {
-  //       return getFileTrack(fileTrack);
-  //     });
-  const fileTracks = [];
+  // FIXME: 高速化
+  const fileTracks =
+  getSubscriptionPlaylistValue("fileTracks") == null
+    ? []
+    : map(subscriptionPlaylist.fileTracks, (fileTrack) => {
+        return getFileTrack(fileTrack);
+      });
 
   const urlTracks =
     getSubscriptionPlaylistValue("urlTracks") == null
       ? []
-      : toArray(subscriptionPlaylist.urlTracks).map((urlTrack) => {
+      : map(subscriptionPlaylist.urlTracks, (urlTrack) => {
           return getUrlTrack(urlTrack);
         });
 
@@ -289,13 +289,12 @@ const getSubscriptionPlaylist = (subscriptionPlaylist) => {
 };
 
 const getLibraryPlayList = (libraryPlayList) => {
-  const fileTracks = [];
-  // const fileTracks = toArray(libraryPlayList.fileTracks).map((fileTrack) => getFileTrack(fileTrack));
-  const urlTracks = toArray(libraryPlayList.urlTracks).map((urlTrack) =>
+  const fileTracks = map(libraryPlayList.fileTracks, (fileTrack) => getFileTrack(fileTrack));
+  const urlTracks = map(libraryPlayList.urlTracks, (urlTrack) =>
     getUrlTrack(urlTrack)
   );
-  const sharedTracks = toArray(libraryPlayList.sharedTracks).map(
-    (sharedTrack) => getSharedTrack(sharedTrack)
+  const sharedTracks = map(libraryPlayList.sharedTracks, (sharedTrack) =>
+    getSharedTrack(sharedTrack)
   );
 
   return Object.assign(getPlaylist(libraryPlayList), {
@@ -308,12 +307,11 @@ const getLibraryPlayList = (libraryPlayList) => {
 const getFolderPlaylist = (folderPlaylist) => {
   const getFolderPlaylistValue = getValue(folderPlaylist);
 
-  const fileTracks = [];
-  // const fileTracks = toArray(libraryPlayList.fileTracks).map((fileTrack) => getFileTrack(fileTrack));
-  const urlTracks = toArray(folderPlaylist.urlTracks).map((urlTrack) =>
+  const fileTracks = map(libraryPlayList.fileTracks, (fileTrack) => getFileTrack(fileTrack));
+  const urlTracks = map(folderPlaylist.urlTracks, (urlTrack) =>
     getUrlTrack(urlTrack)
   );
-  const sharedTracks = toArray(folderPlaylist.sharedTracks).map((sharedTrack) =>
+  const sharedTracks = map(folderPlaylist.sharedTracks, (sharedTrack) =>
     getSharedTrack(sharedTrack)
   );
 
@@ -336,8 +334,8 @@ const getAudioCDTrack = (audioCDTrack) => {
 
 const getAudioCDPlaylist = (audioCDPlaylist) => {
   const getAudioCDPlaylistValue = getValue(audioCDPlaylist);
-  const audioCDTracks = toArray(audioCDPlaylist.audioCDTracks).map(
-    (audioCDTrack) => getAudioCDTrack(audioCDTrack)
+  const audioCDTracks = map(audioCDPlaylist.audioCDTracks, (audioCDTrack) =>
+    getAudioCDTrack(audioCDTrack)
   );
 
   return Object.assign(getPlaylist(audioCDPlaylist), {
@@ -353,7 +351,7 @@ const getAudioCDPlaylist = (audioCDPlaylist) => {
 };
 
 const getRadioTunerPlaylist = (radioTunerPlaylist) => {
-  const urlTracks = toArray(radioTunerPlaylist.urlTracks).map((urlTrack) =>
+  const urlTracks = map(radioTunerPlaylist.urlTracks, (urlTrack) =>
     getUrlTrack(urlTrack)
   );
   return Object.assign(getPlaylist(radioTunerPlaylist), {
@@ -396,7 +394,7 @@ const currentEQPreset = (options) => {
  */
 const currentPlaylist = (options) => {
   const playlist = itunes.currentPlaylist();
-  return getPlaylist(playlist);
+  return getPlaylist(playlist, options);
 };
 
 /**
@@ -405,7 +403,7 @@ const currentPlaylist = (options) => {
  */
 const currentTrack = (options) => {
   const track = itunes.currentTrack;
-  return getTrack(track);
+  return getTrack(track, options);
 };
 
 /**
@@ -422,107 +420,92 @@ const currentVisual = (options) => {
  * @returns
  */
 const browserWindow = (options) => {
-  const browserWindows = toArray(itunes.browserWindows);
-  return browserWindows.map((browserWindow) => getBrowserWindow(browserWindow));
+  return map(itunes.browserWindows, (browserWindow) =>
+    getBrowserWindow(browserWindow)
+  );
 };
 
 const windows = () => {
-  const windows = toArray(itunes.windows);
-  return windows.map((window) => getWindow(window));
+  return map(itunes.windows, (window) => getWindow(window));
 };
 
 const encoders = (options) => {
-  const encoders = toArray(itunes.encoders);
-  return encoders.map((encoder) => getEncoder(encoder));
+  return map(itunes.encoders, (encoder) => getEncoder(encoder));
 };
 
 const eqPresets = (options) => {
-  const eqPresets = toArray(itunes.eqPresets);
-  return eqPresets.map((eqPreset) => getEQPreset(eqPreset));
+  return map(itunes.eqPresets, (eqPreset) => getEQPreset(eqPreset));
 };
 
 const eqWindows = (options) => {
-  const eqWindows = toArray(itunes.eqWindows);
-  return eqWindows.map((eqWindow) => getEQWindow(eqWindow));
+  return map(itunes.eqWindows, (eqWindow) => getEQWindow(eqWindow));
 };
 
 const miniplayerWindows = (options) => {
-  const miniplayerWindows = toArray(itunes.miniplayerWindows);
-  return miniplayerWindows.map((miniplayerWindow) =>
+  return map(itunes.miniplayerWindows, (miniplayerWindow) =>
     getMiniplayerWindow(miniplayerWindow)
   );
 };
 
 const playlists = (options) => {
-  const playlists = toArray(itunes.playlists);
-  return playlists.map((playlist) => getPlaylist(playlist));
+  return map(itunes.playlists, (playlist) => getPlaylist(playlist));
 };
 
 const playlistWindows = (options) => {
-  const playlistWindows = toArray(itunes.playlistWindows);
-  return playlistWindows.map((playlistWidow) =>
+  return map(itunes.playlistWindows, (playlistWidow) =>
     getPlaylistWindow(playlistWidow)
   );
 };
 
 const sources = (options) => {
-  const sources = toArray(itunes.sources);
-  return sources.map((source) => getSource(source));
+  return map(itunes.sources, (source) => getSource(source));
 };
 
 const tracks = (options) => {
-  // TODO: 処理速度が遅い
-  return [];
-  // const tracks = toArray(itunes.tracks);
-  // return tracks.map((track) => getTrack(track));
+  // FIXME: 処理速度が遅い
+  return map(itunes.tracks, (track) => getTrack(track));
 };
 
 const videoWindows = (options) => {
-  const videoWindows = toArray(itunes.videoWindows);
-  return videoWindows.map((videoWindow) => getVideoWindow(videoWindow));
+  return map(itunes.videoWindows, (videoWindow) => getVideoWindow(videoWindow));
 };
 
 const visuals = (options) => {
-  const visuals = toArray(itunes.visuals);
-  return visuals.map((visual) => getVisual(visual));
+  return map(itunes.visuals, (visual) => getVisual(visual));
 };
 
 const userPlaylists = (options) => {
-  const userPlaylists = toArray(itunes.userPlaylists);
-  return userPlaylists.map((userPlaylist) => getUserPlaylist(userPlaylist));
+  return map(itunes.userPlaylists, (userPlaylist) =>
+    getUserPlaylist(userPlaylist)
+  );
 };
 
 const subscriptionPlaylists = (options) => {
-  const subscriptionPlaylists = toArray(itunes.subscriptionPlaylists);
-  return subscriptionPlaylists.map((subscriptionPlaylist) =>
+  return map(itunes.subscriptionPlaylists, (subscriptionPlaylist) =>
     getSubscriptionPlaylist(subscriptionPlaylist)
   );
 };
 
 const libraryPlaylists = (options) => {
-  const libraryPlaylists = toArray(itunes.libraryPlaylists);
-  return libraryPlaylists.map((libraryPlaylist) =>
+  return map(itunes.libraryPlaylists, (libraryPlaylist) =>
     getLibraryPlayList(libraryPlaylist)
   );
 };
 
 const folderPlaylists = (options) => {
-  const folderPlaylists = toArray(itunes.folderPlaylists);
-  return folderPlaylists.map((folderPlaylist) =>
+  return map(itunes.folderPlaylists, (folderPlaylist) =>
     getFolderPlaylists(folderPlaylist)
   );
 };
 
 const audioCDPlaylists = (options) => {
-  const audioCDPlaylists = toArray(itunes.audioCDPlaylists);
-  return audioCDPlaylists.map((audioCDPlaylist) =>
+  return map(itunes.audioCDPlaylists, (audioCDPlaylist) =>
     getAudioCDPlaylist(audioCDPlaylist)
   );
 };
 
 const radioTunerPlaylists = (options) => {
-  const radioTunerPlaylists = toArray(itunes.radioTunerPlaylists);
-  return radioTunerPlaylists.map((radioTunerPlaylist) =>
+  return map(itunes.radioTunerPlaylists, (radioTunerPlaylist) =>
     getRadioTunerPlaylist(radioTunerPlaylist)
   );
 };

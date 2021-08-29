@@ -126,7 +126,7 @@ const getTrack = (track, options) => {
   let artworks = [];
   if (options && options.artwork === TRUE) {
     if (getTrackValue("artworks") != null) {
-      map(track.artworks, (artwork) => {
+      artworks = map(track.artworks, (artwork) => {
           return getArtwork(artwork);
         });
     }

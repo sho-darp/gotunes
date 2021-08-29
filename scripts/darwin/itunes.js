@@ -3,6 +3,9 @@ app.includeStandardAdditions = true;
 const version = Number(app.doShellScript("sw_vers -productVersion| cut -d '.' -f 1-2"));
 const itunes = version < 10.15 ? Application("iTunes") : Application("Music");
 
+const TRUE = "true";
+const FALSE = "false";
+
 const map = (array, callback) => {
   const objArray = [];
   for (let i = 0; i < array.length; i++) {
@@ -118,14 +121,16 @@ const getArtwork = (artwork) => {
   });
 };
 
-const getTrack = (track) => {
+const getTrack = (track, options) => {
   const getTrackValue = getValue(track);
-  const artworks =
-    getTrackValue("artworks") == null
-      ? []
-      : toArray(track.artworks).map((artwork) => {
+  let artworks = [];
+  if (options && options.artwork === TRUE) {
+    if (getTrackValue("artworks") != null) {
+      map(track.artworks, (artwork) => {
           return getArtwork(artwork);
         });
+    }
+  }
 
   return Object.assign(getItem(track), getTrackValue("properties"), {
     artworks: artworks,

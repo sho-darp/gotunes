@@ -2,6 +2,7 @@ package itunes
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -95,9 +96,13 @@ func CurrentStreamURL() string {
 }
 
 // CurrentTrack the current targeted track
-func CurrentTrack() (Track, error) {
+func CurrentTrack(artwork bool) (Track, error) {
 	track := Track{}
-	err := unmarshal("currentTrack", &track)
+	args := []string{
+		fmt.Sprintf("artwork=%t", artwork),
+	}
+
+	err := unmarshal("currentTrack", &track, args...)
 	return track, err
 }
 

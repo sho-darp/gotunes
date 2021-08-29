@@ -365,7 +365,7 @@ const getRadioTunerPlaylist = (radioTunerPlaylist) => {
  * the currently selected AirPlay device(s)
  * @returns []airplayDevice
  */
-const currentAirPlayDevices = () => {
+const currentAirPlayDevices = (options) => {
   const devices = itunes.currentAirPlayDevices();
   return devices.map((device) => {
     return getAirPlayDevices(device);
@@ -376,7 +376,7 @@ const currentAirPlayDevices = () => {
  * the currently selected encoder (MP3, AIFF, WAV, etc.)
  * @returns Encoder
  */
-const currentEncoder = () => {
+const currentEncoder = (options) => {
   const encoder = itunes.currentEncoder();
   return getEncoder(encoder);
 };
@@ -385,7 +385,7 @@ const currentEncoder = () => {
  * the currently selected equalizer prese
  * @returns EQPreset
  */
-const currentEQPreset = () => {
+const currentEQPreset = (options) => {
   const eqPreset = itunes.currentEQPreset();
   return getEQPreset(eqPreset);
 };
@@ -394,7 +394,7 @@ const currentEQPreset = () => {
  * the playlist containing the currently targeted track
  * @returns playlist
  */
-const currentPlaylist = () => {
+const currentPlaylist = (options) => {
   const playlist = itunes.currentPlaylist();
   return getPlaylist(playlist);
 };
@@ -403,7 +403,7 @@ const currentPlaylist = () => {
  * the current targeted track
  * @returns track
  */
-const currentTrack = () => {
+const currentTrack = (options) => {
   const track = itunes.currentTrack;
   return getTrack(track);
 };
@@ -412,7 +412,7 @@ const currentTrack = () => {
  * the currently selected visual plug-in
  * @returns visual
  */
-const currentVisual = () => {
+const currentVisual = (options) => {
   const visual = itunes.currentVisual();
   return getVisual(visual);
 };
@@ -421,7 +421,7 @@ const currentVisual = () => {
  * main iTunes windows
  * @returns
  */
-const browserWindow = () => {
+const browserWindow = (options) => {
   const browserWindows = toArray(itunes.browserWindows);
   return browserWindows.map((browserWindow) => getBrowserWindow(browserWindow));
 };
@@ -431,96 +431,96 @@ const windows = () => {
   return windows.map((window) => getWindow(window));
 };
 
-const encoders = () => {
+const encoders = (options) => {
   const encoders = toArray(itunes.encoders);
   return encoders.map((encoder) => getEncoder(encoder));
 };
 
-const eqPresets = () => {
+const eqPresets = (options) => {
   const eqPresets = toArray(itunes.eqPresets);
   return eqPresets.map((eqPreset) => getEQPreset(eqPreset));
 };
 
-const eqWindows = () => {
+const eqWindows = (options) => {
   const eqWindows = toArray(itunes.eqWindows);
   return eqWindows.map((eqWindow) => getEQWindow(eqWindow));
 };
 
-const miniplayerWindows = () => {
+const miniplayerWindows = (options) => {
   const miniplayerWindows = toArray(itunes.miniplayerWindows);
   return miniplayerWindows.map((miniplayerWindow) =>
     getMiniplayerWindow(miniplayerWindow)
   );
 };
 
-const playlists = () => {
+const playlists = (options) => {
   const playlists = toArray(itunes.playlists);
   return playlists.map((playlist) => getPlaylist(playlist));
 };
 
-const playlistWindows = () => {
+const playlistWindows = (options) => {
   const playlistWindows = toArray(itunes.playlistWindows);
   return playlistWindows.map((playlistWidow) =>
     getPlaylistWindow(playlistWidow)
   );
 };
 
-const sources = () => {
+const sources = (options) => {
   const sources = toArray(itunes.sources);
   return sources.map((source) => getSource(source));
 };
 
-const tracks = () => {
+const tracks = (options) => {
   // TODO: 処理速度が遅い
   return [];
   // const tracks = toArray(itunes.tracks);
   // return tracks.map((track) => getTrack(track));
 };
 
-const videoWindows = () => {
+const videoWindows = (options) => {
   const videoWindows = toArray(itunes.videoWindows);
   return videoWindows.map((videoWindow) => getVideoWindow(videoWindow));
 };
 
-const visuals = () => {
+const visuals = (options) => {
   const visuals = toArray(itunes.visuals);
   return visuals.map((visual) => getVisual(visual));
 };
 
-const userPlaylists = () => {
+const userPlaylists = (options) => {
   const userPlaylists = toArray(itunes.userPlaylists);
   return userPlaylists.map((userPlaylist) => getUserPlaylist(userPlaylist));
 };
 
-const subscriptionPlaylists = () => {
+const subscriptionPlaylists = (options) => {
   const subscriptionPlaylists = toArray(itunes.subscriptionPlaylists);
   return subscriptionPlaylists.map((subscriptionPlaylist) =>
     getSubscriptionPlaylist(subscriptionPlaylist)
   );
 };
 
-const libraryPlaylists = () => {
+const libraryPlaylists = (options) => {
   const libraryPlaylists = toArray(itunes.libraryPlaylists);
   return libraryPlaylists.map((libraryPlaylist) =>
     getLibraryPlayList(libraryPlaylist)
   );
 };
 
-const folderPlaylists = () => {
+const folderPlaylists = (options) => {
   const folderPlaylists = toArray(itunes.folderPlaylists);
   return folderPlaylists.map((folderPlaylist) =>
     getFolderPlaylists(folderPlaylist)
   );
 };
 
-const audioCDPlaylists = () => {
+const audioCDPlaylists = (options) => {
   const audioCDPlaylists = toArray(itunes.audioCDPlaylists);
   return audioCDPlaylists.map((audioCDPlaylist) =>
     getAudioCDPlaylist(audioCDPlaylist)
   );
 };
 
-const radioTunerPlaylists = () => {
+const radioTunerPlaylists = (options) => {
   const radioTunerPlaylists = toArray(itunes.radioTunerPlaylists);
   return radioTunerPlaylists.map((radioTunerPlaylist) =>
     getRadioTunerPlaylist(radioTunerPlaylist)
@@ -553,21 +553,21 @@ function run(args) {
     case "converting":
       return itunes.converting();
     case "currentAirPlayDevices":
-      return JSON.stringify(currentAirPlayDevices());
+      return JSON.stringify(currentAirPlayDevices(options));
     case "currentEncoder":
-      return JSON.stringify(currentEncoder());
+      return JSON.stringify(currentEncoder(options));
     case "currentEQPreset":
-      return JSON.stringify(currentEQPreset());
+      return JSON.stringify(currentEQPreset(options));
     case "currentPlaylist":
-      return JSON.stringify(currentPlaylist());
+      return JSON.stringify(currentPlaylist(options));
     case "currentStreamTitle":
       return itunes.currentStreamTitle();
     case "currentStreamURL":
       return itunes.converting();
     case "currentTrack":
-      return JSON.stringify(currentTrack());
+      return JSON.stringify(currentTrack(options));
     case "currentVisual":
-      return JSON.stringify(currentVisual());
+      return JSON.stringify(currentVisual(options));
     case "eqEnabled":
       return itunes.eqEnabled();
     case "fixedIndexing":
@@ -602,41 +602,41 @@ function run(args) {
       return itunes.visualSize();
     //
     case "browserWindows":
-      return JSON.stringify(browserWindow());
+      return JSON.stringify(browserWindow(options));
     case "encoders":
-      return JSON.stringify(encoders());
+      return JSON.stringify(encoders(options));
     case "eqPresets":
-      return JSON.stringify(eqPresets());
+      return JSON.stringify(eqPresets(options));
     case "eqWindows":
-      return JSON.stringify(eqWindows());
+      return JSON.stringify(eqWindows(options));
     case "miniplayerWindows":
-      return JSON.stringify(miniplayerWindows());
+      return JSON.stringify(miniplayerWindows(options));
     case "playlists":
-      return JSON.stringify(playlists());
+      return JSON.stringify(playlists(options));
     case "playlistWindows":
-      return JSON.stringify(playlistWindows());
+      return JSON.stringify(playlistWindows(options));
     case "sources":
-      return JSON.stringify(sources());
+      return JSON.stringify(sources(options));
     case "tracks":
-      return JSON.stringify(tracks());
+      return JSON.stringify(tracks(options));
     case "videoWindows":
-      return JSON.stringify(videoWindows());
+      return JSON.stringify(videoWindows(options));
     case "visuals":
-      return JSON.stringify(visuals());
+      return JSON.stringify(visuals(options));
     case "windows":
-      return JSON.stringify(windows());
+      return JSON.stringify(windows(options));
     case "userPlaylists":
-      return JSON.stringify(userPlaylists());
+      return JSON.stringify(userPlaylists(options));
     case "subscriptionPlaylists":
-      return JSON.stringify(subscriptionPlaylists());
+      return JSON.stringify(subscriptionPlaylists(options));
     case "libraryPlaylists":
-      return JSON.stringify(libraryPlaylists());
+      return JSON.stringify(libraryPlaylists(options));
     case "folderPlaylists":
-      return JSON.stringify(folderPlaylists());
+      return JSON.stringify(folderPlaylists(options));
     case "audioCDPlaylists":
-      return JSON.stringify(folderPlaylists());
+      return JSON.stringify(folderPlaylists(options));
     case "radioTunerPlaylist":
-      return JSON.stringify(radioTunerPlaylists());
+      return JSON.stringify(radioTunerPlaylists(options));
     case "backTrack":
       return itunes.backTrack();
     case "fastForward":

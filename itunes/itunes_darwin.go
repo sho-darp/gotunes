@@ -6,7 +6,15 @@ import (
 	"github.com/sho-darp/gotunes/scripts/darwin"
 )
 
-func switchExec(arg string) *exec.Cmd {
+func switchExec(arg ...string) *exec.Cmd {
 	script := darwin.GetScript()
-	return exec.Command("osascript", "-l", "JavaScript", "-e", string(script), arg)
+	args := []string{
+		"-l",
+		"JavaScript",
+		"-e",
+		string(script),
+	}
+	args = append(args, arg...)
+
+	return exec.Command("osascript", args...)
 }

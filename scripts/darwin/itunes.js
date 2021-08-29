@@ -537,7 +537,17 @@ const returnError = (code = 1) => {
 };
 
 function run(args) {
-  switch (args[0]) {
+  const command = args[0];
+  const options = {};
+  args
+    .slice(1)
+    .filter((arg) => /^.+=.+$/.test(arg))
+    .forEach((arg) => {
+      const [key, value] = arg.split("=");
+      options[key] = value;
+    });
+
+  switch (command) {
     case "airplayEnabled":
       return itunes.airplayEnabled();
     case "converting":

@@ -6,23 +6,27 @@ import (
 	"strings"
 )
 
-func scriptExec(arg string) ([]byte, error) {
-	cmd := switchExec(arg)
+func scriptExec(arg ...string) ([]byte, error) {
+	cmd := switchExec(arg...)
 	return cmd.Output()
 }
 
-func scriptAsyncExec(arg string) error {
-	cmd := switchExec(arg)
+func scriptAsyncExec(arg ...string) error {
+	cmd := switchExec(arg...)
 	return cmd.Start()
 }
 
-func scriptExecBool(arg string) (bool, error) {
-	res, _ := scriptExec(arg)
+func scriptExecBool(arg ...string) (bool, error) {
+	res, _ := scriptExec(arg...)
 	return strconv.ParseBool(string(res))
 }
 
-func unmarshal(command string, v interface{}) error {
-	jsonb, err := scriptExec(command)
+func unmarshal(command string, v interface{}, arg ...string) error {
+	args := []string{
+		command,
+	}
+	args = append(args, arg...)
+	jsonb, err := scriptExec(args...)
 	if err != nil {
 		return err
 	}
